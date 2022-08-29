@@ -14,5 +14,7 @@ public class AggregateTradesListTest {
 
          Assert.assertTrue(responseInListOfPojo.get(0).M);
 
+
+
     }
 }

@@ -1,0 +1,120 @@
+  --------------
+  DEFINITIONS
+  --------------
+  Serialization: converting JSON body to POJO object
+  Deserialization: converting POJO object to JSON body or to a String
+
+
+  --------------
+  NOTES 1
+  --------------
+  PROCESS:
+
+  GET Method:
+  1- We test API in Postman
+  2- For Get method we only convert the "Response" to POJO Class.
+  3- Create a Client class and respective method to hit the API and get the Response.
+  4- The 'response' that we'll get will be in a form of object or a plain string
+          Response response = given()
+  5- Convert the Response to Response POJO (here we are using GSON).
+  6- Add Assertion for Response Status code, Response Body (response body can have multiple things)
+      HIT API -> GET RESPONSE -> CONVERT TO POJO
+
+  POST Method:
+  1- We test API in Postman
+  2- For Post method we convert both "Request and Response" to POJO Classes.
+  3- Create a Client class and respective method to hit the API and get the Response.
+  4- Add the Testcase (in step-definition) and Post the data with Request POJO.
+  5- Convert the Response to Response POJO (here we are using GSON).
+  6- Add Assertion for Response Status code, Response Body (response body can have mulitiple things)
+
+
+  --------------
+  NOTES 2
+  --------------
+  STORING RESPONSE IN A POJO Class
+
+    -whatever classes we create in "response" package inside 'clients' are known as POJO classes.
+
+    -we'll need to map the API response to POJO class, and for that we will use a "Gson" library to create that bridge.
+
+          Gson gson = new Gson();
+            - Gson is a class
+            - gson is an object
+            - Gson take two parameters 1) response we get from API, 2) to which POJO class we want to convert
+
+    -create the object of the POJO class where we want to store.
+
+          GetListUsersReponse getListUsersResponse = gson.fromJson(listUsersResponse.body().asString(), GetListUsersReponse.class);
+                                object of POJO class = gson parameters (1.response from API as String, 2.Mapping to relevant POJO class)
+
+  --------------
+  NOTES 3
+  --------------
+  A)- When we have a single JSON object in the Response payload:
+      RenewValidateResponse renewValidateClientList = gson.fromJson(renewValidateClient.asString(), RenewValidateResponse.class);
+
+  B)- When we have List of Json objects in the Response Payload:
+      When we have List of Json objects in the Response Payload, and we have to map List of Json object to POJO class.
+      We use the following steps and line of codes:
+
+      step 1- convert a simple pojo to a list of pojo
+              Type listType = new TypeToken< Collection<Pojo> >() {}.getType();
+              e.g;
+              Type listOfPojo = new TypeToken<Collection<RenewValidateClient>>(){}.getType();
+              note: 'RenewValidateClient' is a Pojo class.
+
+      step 2-  map list of pojo objects to pojo class.
+              List<RenewValidateClient> renewValidateClientList = gson.fromJson(renewValidateClient.asString(), listOfPojo);
+
+
+----------------------------------------------------------
+Q: Why we are Not using JUnit5?
+Q: Do we use Hamcrest assertions using TestNG?
+
+
+
+[
+    {
+    "name" : "tom",
+    "age"   : 25,
+    "id"    : 001
+    },
+        {
+        "name" : "mike",
+        "age"   : 35,
+        "id"    : 002
+        }
+]
+    //When we have same Key name but different values then its a List of POJO objects
+
+
+    public class Student{
+
+    String name;
+    int age;
+    int id;
+    }
+
+    public static void main(String[] args){
+
+    Student std1 = new Student();
+
+    List<Student> studentList = new List<Student>;
+
+    [
+        {
+        "name" : "tom",
+        "age"   : 25,
+        "id"    : 001
+        },
+
+        {
+        "name" : "mike",
+        "age"   : 35,
+        "id"    : 002
+        }
+    ]
+
+    }
+
